@@ -84,4 +84,56 @@ public class UserStateService
         StateHasChanged();
     }
 
+    public async Task<HTTPResponseData<ProfileUserDTO>?> UpdateProfileAsync(
+    UpdateProfileDTO model)
+{
+    try
+    {
+        string? token = await _localStorageService
+            .GetItemAsync<string>("accessToken");
+
+
+        if (token == null)
+        {
+            return null;
+        }
+
+
+        _httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer",
+                token
+            );
+
+
+        HttpResponseMessage response =
+            await _httpClient.PutAsJsonAsync(
+                "/api/User/updateProfile",
+                model
+            );
+
+
+        HTTPResponseData<ProfileUserDTO>? responseData =
+            await response.Content
+            .ReadFromJsonAsync<HTTPResponseData<ProfileUserDTO>>();
+
+
+        if(responseData != null 
+            && responseData.statusCode == 200)
+        {
+            CurrentUser = responseData.DataResponse;
+
+            StateHasChanged();
+        }
+
+
+        return responseData;
+    }
+    catch(Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        return null;
+    }
+}
+
 }
