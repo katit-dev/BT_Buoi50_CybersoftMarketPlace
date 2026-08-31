@@ -10,6 +10,7 @@ public interface IUserService
     public Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model);
     public Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model);
     public Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token);
+    Task<HTTPResponseData<ProfileUserDTO>>UpdateProfileAsync(UpdateProfileDTO model,string token);
 }
 
 public class UserService : IUserService
