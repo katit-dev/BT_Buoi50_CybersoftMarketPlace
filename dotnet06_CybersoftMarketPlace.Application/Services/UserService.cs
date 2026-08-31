@@ -10,7 +10,7 @@ public interface IUserService
     public Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model);
     public Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model);
     public Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token);
-    Task<HTTPResponseData<ProfileUserDTO>>UpdateProfileAsync(UpdateProfileDTO model,string token);
+    Task<HTTPResponseData<ProfileUserDTO>> UpdateProfileAsync(UpdateProfileDTO model, string token);
 }
 
 public class UserService : IUserService
@@ -22,7 +22,7 @@ public class UserService : IUserService
 
     //Trong tầng service sẽ gọi các repository để xử lý
 
-    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository,JwtAuthService jwtAuthService)
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository, JwtAuthService jwtAuthService)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
@@ -41,7 +41,7 @@ public class UserService : IUserService
                 return new HTTPResponseData<ProfileUserDTO>
                 {
                     DataResponse = null,
-                    Message = "Token không hợp lệ",
+                    Message = UserResponseMessageDTO.InvalidToken,
                     statusCode = 401,
                     Timestamp = DateTime.Now
                 };
@@ -60,13 +60,14 @@ public class UserService : IUserService
             return new HTTPResponseData<ProfileUserDTO>
             {
                 DataResponse = profileUserDTO,
-                Message = "Lấy thông tin người dùng thành công",
+                Message = UserResponseMessageDTO.GetProfileSuccess,
                 statusCode = 200,
                 Timestamp = DateTime.Now
             };
 
             //Dùng userid để lấy thông tin user từ database
-        }catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             return new HTTPResponseData<ProfileUserDTO>
             {
@@ -76,7 +77,7 @@ public class UserService : IUserService
                 Timestamp = DateTime.Now
             };
         }
-      
+
 
     }
 
@@ -86,7 +87,7 @@ public class UserService : IUserService
 
         // tạo token
         string? token = await _jwtAuthService.GenerateToken(model);
-        if(token == null)
+        if (token == null)
         {
             return new HTTPResponseData<string>
             {
@@ -162,13 +163,86 @@ public class UserService : IUserService
         {
             await _unitOfWork.RollbackTransactionAsync();
         }
-            return new HTTPResponseData<string>
+        return new HTTPResponseData<string>
+        {
+            DataResponse = UserResponseMessageDTO.FailedRegister,
+            Message = UserResponseMessageDTO.FailedRegister,
+            statusCode = 400,
+            Timestamp = DateTime.Now
+        };
+
+    }
+
+    public async Task<HTTPResponseData<ProfileUserDTO>> UpdateProfileAsync(
+    UpdateProfileDTO model,
+    string token)
+    {
+        try
+        {
+            string? userId = _jwtAuthService.DecodePayloadTokenId(token);
+
+            if (userId == null)
             {
-                DataResponse = UserResponseMessageDTO.FailedRegister,
-                Message = UserResponseMessageDTO.FailedRegister,
-                statusCode = 400,
+                return new HTTPResponseData<ProfileUserDTO>
+                {
+                    DataResponse = null,
+                    Message = UserResponseMessageDTO.InvalidToken,
+                    statusCode = 401,
+                    Timestamp = DateTime.Now
+                };
+            }
+
+            User? user = await _unitOfWork.UserRepository
+                .SingleOrDefault(
+                    u => u.Id.ToString() == userId
+                );
+
+
+            if (user == null)
+            {
+                return new HTTPResponseData<ProfileUserDTO>
+                {
+                    DataResponse = null,
+                    Message = UserResponseMessageDTO.UserNotFound,
+                    statusCode = 404,
+                    Timestamp = DateTime.Now
+                };
+            }
+
+            user.FullName = model.FullName;
+            user.Phone = model.Phone;
+            user.Address = model.Address;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            ProfileUserDTO profileUserDTO = new ProfileUserDTO
+            {
+                Id = user.Id.ToString(),
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.Phone,
+                Address = user.Address,
+                AvatarUrl = user.Avatar
+            };
+
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = profileUserDTO,
+                Message = UserResponseMessageDTO.UpdateProfileSuccess,
+                statusCode = 200,
                 Timestamp = DateTime.Now
             };
 
+        }
+        catch (Exception ex)
+        {
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.UpdateProfileFailed + ": " + ex.Message,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
+        }
     }
 }
