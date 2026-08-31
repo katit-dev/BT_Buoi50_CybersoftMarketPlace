@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 // ============================================================
 // DI SWAGGER
@@ -56,6 +57,12 @@ builder.Services.AddSwaggerGen(options =>
             Description = "Nhập token JWT vào ô dưới đây"
         }
     );
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = new List<string>()
+    });
+    
 });
 
 // ============================================================
@@ -150,9 +157,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //DI Service
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-// builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICartService, CartService>();
 // builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 
 //Khai cors cho fe : http://localhost:5279
 builder.Services.AddCors(options =>
@@ -170,6 +177,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.MapControllers();
+app.MapHub<CartHub>("/cart-hub");
 
 app.UseCors("AllowSpecificOrigin");
 
