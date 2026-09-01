@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Infrastructure.Repositories;
 using Infrastructure.Models;
 using backend_netcore_dotnet06.Helper;
+using dotnet06_CybersoftMarketPlace.Application.DTOs;
 namespace dotnet06_CybersoftMarketPlace.Api.Controllers
 {
     [ApiController]
@@ -79,6 +80,16 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
 
             HTTPResponseData<ProfileUserDTO> response = await _userService.UpdateAvatarAsync(model, token);
 
+            return StatusCode(response.statusCode, response);
+        }
+
+        [Authorize]
+        [HttpPut("changePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
+        {
+            string userId = User.FindFirst("id")?.Value;
+
+            HTTPResponseData<string> response = await _userService.ChangePasswordAsync(userId, model);
             return StatusCode(response.statusCode, response);
         }
 

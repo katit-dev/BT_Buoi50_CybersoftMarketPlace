@@ -2,6 +2,7 @@
 
 
 using backend_netcore_dotnet06.Helper;
+using dotnet06_CybersoftMarketPlace.Application.DTOs;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ public interface IUserService
     public Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token);
     public Task<HTTPResponseData<ProfileUserDTO>> UpdateProfileAsync(UpdateProfileDTO model, string token);
     public Task<HTTPResponseData<ProfileUserDTO>> UpdateAvatarAsync(UpdateAvatarDTO model, string token);
+    public Task<HTTPResponseData<string>> ChangePasswordAsync(string userId, ChangePasswordDTO model);
 }
 
 public class UserService : IUserService
@@ -29,6 +31,62 @@ public class UserService : IUserService
         _userRepository = userRepository;
         _userRoleRepository = userRoleRepository;
         _jwtAuthService = jwtAuthService;
+    }
+
+    public async Task<HTTPResponseData<string>> ChangePasswordAsync(
+    string userId,
+    ChangePasswordDTO model)
+    {
+        User? user =
+            await _unitOfWork.UserRepository
+            .SingleOrDefault(x => x.Id.ToString() == userId);
+
+
+        if (user == null)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.UserNotFound,
+                statusCode = 404,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        bool checkPassword =
+            HelperFunction.VerifyPassword(
+                model.OldPassword,
+                user.PasswordHash
+            );
+
+
+        if (!checkPassword)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.OldPasswordIncorrect,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        user.PasswordHash =
+            HelperFunction.HashPassword(model.NewPassword);
+
+
+        await _unitOfWork.SaveChangesAsync();
+
+
+        return new HTTPResponseData<string>
+        {
+            DataResponse = UserResponseMessageDTO.ChangePasswordSuccess,
+            Message = UserResponseMessageDTO.ChangePasswordSuccess,
+            statusCode = 200,
+            Timestamp = DateTime.Now
+        };
     }
 
     public async Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token)

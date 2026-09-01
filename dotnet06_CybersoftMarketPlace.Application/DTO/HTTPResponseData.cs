@@ -53,6 +53,16 @@ public static class UserResponseMessageDTO
     public const string UpdateAvatarSuccess =
     "Update avatar successfully.";
 
-public const string UpdateAvatarFailed =
-    "Update avatar failed.";
+    public const string UpdateAvatarFailed =
+        "Update avatar failed.";
+
+    // Change password
+    public const string ChangePasswordSuccess =
+        "Đổi mật khẩu thành công.";
+
+    public const string OldPasswordIncorrect =
+        "Mật khẩu hiện tại không chính xác.";
+
+    public const string ChangePasswordFailed =
+        "Đổi mật khẩu thất bại.";
 }
