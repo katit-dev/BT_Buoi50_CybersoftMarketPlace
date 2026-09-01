@@ -12,6 +12,7 @@ public interface IUserService
     public Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token);
     public Task<HTTPResponseData<ProfileUserDTO>> UpdateProfileAsync(UpdateProfileDTO model, string token);
     public Task<HTTPResponseData<ProfileUserDTO>> UpdateAvatarAsync(UpdateAvatarDTO model, string token);
+    public Task<HTTPResponseData<string>> ChangePasswordAsync(string userId, ChangePasswordDTO model);
 }
 
 public class UserService : IUserService
