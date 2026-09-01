@@ -334,8 +334,8 @@
                                     </span>
 
 
-                                    <input type="text" class="form-control"
-                                           value="@_userStateService.CurrentUser?.AvatarUrl" disabled />
+                                    <input type="text" class="form-control" @bind="avatarUrl"
+                                           placeholder="Nhập đường dẫn ảnh đại diện" />
 
                                 </div>
 
@@ -409,32 +409,47 @@
 
 @code {
     private UpdateProfileDTO updateModel = new();
+    private string avatarUrl = "";
 
     protected override async Task OnInitializedAsync()
     {
-
         _userStateService.OnChange += StateHasChanged;
+
 
         await _userStateService.GetProfileAsync();
 
+
         if (_userStateService.CurrentUser != null)
         {
-
+            // Update Profile
             updateModel.FullName =
                 _userStateService.CurrentUser.FullName;
-
 
             updateModel.Phone =
                 _userStateService.CurrentUser.PhoneNumber;
 
-
             updateModel.Address =
                 _userStateService.CurrentUser.Address;
 
-        }
 
+            // Update Avatar
+            avatarUrl =
+                _userStateService.CurrentUser.AvatarUrl;
+        }
     }
 
+    private async Task SaveAvatar()
+    {
+        UpdateAvatarDTO model =
+            new UpdateAvatarDTO
+            {
+                AvatarUrl = avatarUrl
+            };
+
+
+        await _userStateService
+            .UpdateAvatarAsync(model);
+    }
     private async Task SaveProfile()
     {
 
