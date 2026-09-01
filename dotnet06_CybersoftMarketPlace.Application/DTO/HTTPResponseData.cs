@@ -65,4 +65,14 @@ public static class UserResponseMessageDTO
 
     public const string ChangePasswordFailed =
         "Đổi mật khẩu thất bại.";
+
+    public const string InvalidOldPassword =
+    "Mật khẩu cũ không chính xác.";
+
+    public const string PasswordConfirmNotMatch =
+        "Mật khẩu xác nhận không khớp.";
+
+    public const string NewPasswordCannotBeOldPassword =
+        "Mật khẩu mới không được trùng với mật khẩu cũ.";
+
 }
