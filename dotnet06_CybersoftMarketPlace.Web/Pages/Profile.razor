@@ -3,34 +3,40 @@
 @layout HomePageMaster
 
 @inject UserStateService _userStateService
+@inject IJSRuntime JS
 
 @implements IDisposable
 
 
+@* ===================== TRANG HỒ SƠ NGƯỜI DÙNG ===================== *@
+
 <div class="row g-4">
 
-    <!-- CỘT TRÁI -->
+    @* --------- CỘT TRÁI: THẺ NGƯỜI DÙNG + MENU --------- *@
     <div class="col-12 col-md-4 col-lg-3">
 
         <div class="card border-0 shadow-sm mb-3">
 
             <div class="card-body text-center p-4">
 
-                <img src="https://placehold.co/120x120?text=Avatar" alt="Ảnh đại diện"
-                     class="rounded-circle border mb-3" width="120" height="120" />
-
+                <img src="@(_userStateService.CurrentUser?.AvatarUrl
+                            ?? "https://placehold.co/120x120?text=Avatar")"
+                     alt="Ảnh đại diện"
+                     class="rounded-circle border mb-3"
+                     width="120"
+                     height="120" />
 
                 <h6 class="fw-semibold mb-1">
                     @_userStateService.CurrentUser?.FullName
                 </h6>
 
-
                 <p class="small text-secondary mb-3">
                     @_userStateService.CurrentUser?.Email
                 </p>
 
-
-                <button type="button" class="btn btn-outline-danger btn-sm">
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        @onclick="FocusAvatarInput">
 
                     <i class="fas fa-camera me-1"></i>
                     Đổi ảnh đại diện
@@ -44,7 +50,8 @@
 
         <div class="list-group shadow-sm">
 
-            <a href="#" class="list-group-item list-group-item-action active">
+            <a href="#"
+               class="list-group-item list-group-item-action active">
 
                 <i class="fas fa-user me-2"></i>
                 Hồ sơ của tôi
@@ -52,7 +59,8 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="#"
+               class="list-group-item list-group-item-action">
 
                 <i class="fas fa-lock me-2"></i>
                 Đổi mật khẩu
@@ -60,7 +68,8 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="#"
+               class="list-group-item list-group-item-action">
 
                 <i class="fas fa-map-marker-alt me-2"></i>
                 Địa chỉ giao hàng
@@ -68,7 +77,8 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="#"
+               class="list-group-item list-group-item-action">
 
                 <i class="fas fa-box me-2"></i>
                 Đơn mua
@@ -76,7 +86,8 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="#"
+               class="list-group-item list-group-item-action">
 
                 <i class="fas fa-ticket-alt me-2"></i>
                 Kho voucher
@@ -84,7 +95,8 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action text-danger">
+            <a href="#"
+               class="list-group-item list-group-item-action text-danger">
 
                 <i class="fas fa-sign-out-alt me-2"></i>
                 Đăng xuất
@@ -96,20 +108,16 @@
     </div>
 
 
-
-    <!-- CỘT PHẢI -->
+    @* --------- CỘT PHẢI: CHI TIẾT HỒ SƠ --------- *@
     <div class="col-12 col-md-8 col-lg-9">
 
-
         <div class="card border-0 shadow-sm">
-
 
             <div class="card-header bg-white py-3">
 
                 <h5 class="mb-1">
                     Hồ sơ của tôi
                 </h5>
-
 
                 <p class="small text-secondary mb-0">
                     Quản lý thông tin hồ sơ để bảo mật tài khoản
@@ -118,20 +126,14 @@
             </div>
 
 
-
             <div class="card-body p-4">
 
-
-                <!-- ID -->
-
+                @* Mã người dùng *@
                 <div class="row mb-3 align-items-center">
 
                     <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
-
                         Mã người dùng
-
                     </label>
-
 
                     <div class="col-12 col-sm-9">
 
@@ -146,13 +148,11 @@
                 </div>
 
 
-
-                <!-- FULL NAME -->
-
+                @* Họ và tên *@
                 <div class="row mb-3 align-items-center">
 
-
-                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="fullName"
+                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Họ và tên
 
@@ -161,9 +161,7 @@
 
                     <div class="col-12 col-sm-9">
 
-
                         <div class="input-group">
-
 
                             <span class="input-group-text bg-white">
 
@@ -171,26 +169,23 @@
 
                             </span>
 
-
-                            <input type="text" class="form-control" @bind="updateModel.FullName" />
+                            <input type="text"
+                                   class="form-control"
+                                   id="fullName"
+                                   @bind="updateProfileModel.FullName" />
 
                         </div>
 
-
                     </div>
-
 
                 </div>
 
 
-
-
-                <!-- EMAIL KHÔNG CHO SỬA -->
-
+                @* Email - chỉ xem *@
                 <div class="row mb-3 align-items-center">
 
-
-                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="email"
+                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Email
 
@@ -199,9 +194,7 @@
 
                     <div class="col-12 col-sm-9">
 
-
                         <div class="input-group">
-
 
                             <span class="input-group-text bg-white">
 
@@ -209,27 +202,24 @@
 
                             </span>
 
-
-                            <input type="email" class="form-control" value="@_userStateService.CurrentUser?.Email"
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   value="@_userStateService.CurrentUser?.Email"
                                    disabled />
 
                         </div>
 
-
                     </div>
-
 
                 </div>
 
 
-
-
-                <!-- PHONE -->
-
+                @* Số điện thoại *@
                 <div class="row mb-3 align-items-center">
 
-
-                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="phoneNumber"
+                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Số điện thoại
 
@@ -238,9 +228,7 @@
 
                     <div class="col-12 col-sm-9">
 
-
                         <div class="input-group">
-
 
                             <span class="input-group-text bg-white">
 
@@ -248,23 +236,23 @@
 
                             </span>
 
-
-                            <input type="tel" class="form-control" @bind="updateModel.Phone" />
-
+                            <input type="tel"
+                                   class="form-control"
+                                   id="phoneNumber"
+                                   @bind="updateProfileModel.Phone" />
 
                         </div>
 
-
                     </div>
 
-
                 </div>
-                <!-- ADDRESS -->
 
+
+                @* Địa chỉ *@
                 <div class="row mb-3">
 
-
-                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="address"
+                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Địa chỉ
 
@@ -273,9 +261,7 @@
 
                     <div class="col-12 col-sm-9">
 
-
                         <div class="input-group">
-
 
                             <span class="input-group-text bg-white align-items-start">
 
@@ -283,28 +269,24 @@
 
                             </span>
 
-
-                            <textarea class="form-control" rows="2" @bind="updateModel.Address">
+                            <textarea class="form-control"
+                                      id="address"
+                                      rows="2"
+                                      @bind="updateProfileModel.Address">
                             </textarea>
-
 
                         </div>
 
-
                     </div>
-
 
                 </div>
 
 
-
-
-                <!-- AVATAR -->
-
+                @* Ảnh đại diện *@
                 <div class="row mb-4">
 
-
-                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="avatarUrl"
+                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Ảnh đại diện
 
@@ -313,19 +295,19 @@
 
                     <div class="col-12 col-sm-9">
 
-
                         <div class="d-flex align-items-center gap-3">
 
-
-                            <img src="@(_userStateService.CurrentUser?.AvatarUrl ?? "https://placehold.co/64x64?text=Avatar")"
-                                 class="rounded-circle border" width="64" height="64" />
+                            <img src="@(_userStateService.CurrentUser?.AvatarUrl
+                                        ?? "https://placehold.co/64x64?text=Avatar")"
+                                 alt="Ảnh đại diện"
+                                 class="rounded-circle border"
+                                 width="64"
+                                 height="64" />
 
 
                             <div class="flex-grow-1">
 
-
                                 <div class="input-group">
-
 
                                     <span class="input-group-text bg-white">
 
@@ -333,177 +315,223 @@
 
                                     </span>
 
-
-                                    <input type="text" class="form-control" @bind="avatarUrl"
+                                    <input type="text"
+                                           class="form-control"
+                                           id="avatarUrl"
+                                           @bind="updateAvatarModel.AvatarUrl"
                                            placeholder="Nhập đường dẫn ảnh đại diện" />
 
                                 </div>
 
-
                             </div>
-
 
                         </div>
 
-
                     </div>
 
-
                 </div>
-
-
 
 
                 <hr class="my-4" />
 
 
+                @* Thông báo *@
+                @if (!string.IsNullOrEmpty(message))
+                {
+                    <div class="alert @(isSuccess ? "alert-success" : "alert-danger")"
+                         role="alert">
+
+                        @message
+
+                    </div>
+                }
 
 
-                <!-- BUTTON -->
-
+                @* Nút hành động *@
                 <div class="row">
-
 
                     <div class="col-12 col-sm-9 offset-sm-3">
 
+                        <button type="button"
+                                class="btn btn-danger px-4 me-2"
+                                @onclick="SaveChanges"
+                                disabled="@isLoading">
 
-                        <button type="button" class="btn btn-danger px-4 me-2" @onclick="SaveProfile">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-1"
+                                      role="status">
+                                </span>
 
-
-                            <i class="fas fa-save me-1"></i>
-
-                            Lưu thay đổi
-
+                                <span>Đang lưu...</span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-save me-1"></i>
+                                <span>Lưu thay đổi</span>
+                            }
 
                         </button>
 
 
-
-                        <button type="button" class="btn btn-outline-secondary px-4" @onclick="CancelUpdate">
-
+                        <button type="button"
+                                class="btn btn-outline-secondary px-4"
+                                @onclick="CancelChanges"
+                                disabled="@isLoading">
 
                             Huỷ
 
-
                         </button>
-
 
                     </div>
 
-
                 </div>
-
 
             </div>
 
-
         </div>
 
-
     </div>
-
 
 </div>
 
 
-
 @code {
-    private UpdateProfileDTO updateModel = new();
-    private string avatarUrl = "";
+
+    private UpdateProfileDTO updateProfileModel = new();
+
+    private UpdateAvatarDTO updateAvatarModel = new();
+
+
+    private bool isLoading = false;
+
+    private bool isSuccess = false;
+
+    private string message = "";
+
 
     protected override async Task OnInitializedAsync()
     {
         _userStateService.OnChange += StateHasChanged;
 
-
         await _userStateService.GetProfileAsync();
 
-
-        if (_userStateService.CurrentUser != null)
-        {
-            // Update Profile
-            updateModel.FullName =
-                _userStateService.CurrentUser.FullName;
-
-            updateModel.Phone =
-                _userStateService.CurrentUser.PhoneNumber;
-
-            updateModel.Address =
-                _userStateService.CurrentUser.Address;
-
-
-            // Update Avatar
-            avatarUrl =
-                _userStateService.CurrentUser.AvatarUrl;
-        }
+        LoadCurrentUserToForm();
     }
 
-    private async Task SaveAvatar()
+
+    private void LoadCurrentUserToForm()
     {
-        UpdateAvatarDTO model =
-            new UpdateAvatarDTO
+        if (_userStateService.CurrentUser == null)
+        {
+            return;
+        }
+
+
+        updateProfileModel.FullName =
+            _userStateService.CurrentUser.FullName;
+
+
+        updateProfileModel.Phone =
+            _userStateService.CurrentUser.PhoneNumber;
+
+
+        updateProfileModel.Address =
+            _userStateService.CurrentUser.Address;
+
+
+        updateAvatarModel.AvatarUrl =
+            _userStateService.CurrentUser.AvatarUrl ?? "";
+    }
+
+
+    private async Task SaveChanges()
+    {
+        try
+        {
+            isLoading = true;
+
+            message = "";
+
+
+            HTTPResponseData<ProfileUserDTO>? profileResponse =
+                await _userStateService.UpdateProfileAsync(
+                    updateProfileModel
+                );
+
+
+            if (profileResponse == null ||
+                profileResponse.statusCode != 200)
             {
-                AvatarUrl = avatarUrl
-            };
+                isSuccess = false;
+
+                message =
+                    profileResponse?.Message
+                    ?? "Cập nhật thông tin hồ sơ thất bại.";
+
+                return;
+            }
 
 
-        await _userStateService
-            .UpdateAvatarAsync(model);
+            HTTPResponseData<ProfileUserDTO>? avatarResponse =
+                await _userStateService.UpdateAvatarAsync(
+                    updateAvatarModel
+                );
+
+
+            if (avatarResponse == null ||
+                avatarResponse.statusCode != 200)
+            {
+                isSuccess = false;
+
+                message =
+                    avatarResponse?.Message
+                    ?? "Cập nhật ảnh đại diện thất bại.";
+
+                return;
+            }
+
+
+            isSuccess = true;
+
+            message = "Cập nhật thông tin hồ sơ thành công.";
+
+
+            LoadCurrentUserToForm();
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+
+            message = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
-    private async Task SaveProfile()
+
+
+    private void CancelChanges()
     {
+        LoadCurrentUserToForm();
 
-        HTTPResponseData<ProfileUserDTO>? response =
-            await _userStateService.UpdateProfileAsync(updateModel);
-
-
-
-        if (response != null && response.statusCode == 200)
-        {
-
-            Console.WriteLine(
-                "Update profile successfully"
-            );
-
-        }
-        else
-        {
-
-            Console.WriteLine(
-                "Update profile failed"
-            );
-
-        }
-
+        message = "";
     }
 
-    private void CancelUpdate()
+
+    private async Task FocusAvatarInput()
     {
-
-        if (_userStateService.CurrentUser != null)
-        {
-
-            updateModel.FullName =
-                _userStateService.CurrentUser.FullName;
-
-
-            updateModel.Phone =
-                _userStateService.CurrentUser.PhoneNumber;
-
-
-            updateModel.Address =
-                _userStateService.CurrentUser.Address;
-
-        }
-
+        await JS.InvokeVoidAsync(
+            "eval",
+            "document.getElementById('avatarUrl')?.focus();"
+        );
     }
+
 
     public void Dispose()
     {
-
         _userStateService.OnChange -= StateHasChanged;
-
     }
-
 
 }
