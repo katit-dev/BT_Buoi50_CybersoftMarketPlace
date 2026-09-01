@@ -48,4 +48,11 @@ public static class UserResponseMessageDTO
 
     public const string UpdateProfileFailed =
         "Update profile failed.";
+
+    // avatar
+    public const string UpdateAvatarSuccess =
+    "Update avatar successfully.";
+
+public const string UpdateAvatarFailed =
+    "Update avatar failed.";
 }
