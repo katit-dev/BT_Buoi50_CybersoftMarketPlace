@@ -1,190 +1,494 @@
 @page "/profile"
+
 @layout HomePageMaster
 
 @inject UserStateService _userStateService
+
 @implements IDisposable
 
-@* ===================== TRANG HỒ SƠ NGƯỜI DÙNG ===================== *@
+
 <div class="row g-4">
 
-    @* --------- CỘT TRÁI: THẺ NGƯỜI DÙNG + MENU --------- *@
+    <!-- CỘT TRÁI -->
     <div class="col-12 col-md-4 col-lg-3">
 
         <div class="card border-0 shadow-sm mb-3">
+
             <div class="card-body text-center p-4">
+
                 <img src="https://placehold.co/120x120?text=Avatar" alt="Ảnh đại diện"
                      class="rounded-circle border mb-3" width="120" height="120" />
-                <h6 class="fw-semibold mb-1">@_userStateService.CurrentUser.FullName</h6>
-                <p class="small text-secondary mb-3">@_userStateService.CurrentUser.Email</p>
+
+
+                <h6 class="fw-semibold mb-1">
+                    @_userStateService.CurrentUser?.FullName
+                </h6>
+
+
+                <p class="small text-secondary mb-3">
+                    @_userStateService.CurrentUser?.Email
+                </p>
+
+
                 <button type="button" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-camera me-1"></i>Đổi ảnh đại diện
+
+                    <i class="fas fa-camera me-1"></i>
+                    Đổi ảnh đại diện
+
                 </button>
+
             </div>
+
         </div>
 
+
         <div class="list-group shadow-sm">
+
             <a href="#" class="list-group-item list-group-item-action active">
-                <i class="fas fa-user me-2"></i>Hồ sơ của tôi
+
+                <i class="fas fa-user me-2"></i>
+                Hồ sơ của tôi
+
             </a>
+
+
             <a href="#" class="list-group-item list-group-item-action">
-                <i class="fas fa-lock me-2"></i>Đổi mật khẩu
+
+                <i class="fas fa-lock me-2"></i>
+                Đổi mật khẩu
+
             </a>
+
+
             <a href="#" class="list-group-item list-group-item-action">
-                <i class="fas fa-map-marker-alt me-2"></i>Địa chỉ giao hàng
+
+                <i class="fas fa-map-marker-alt me-2"></i>
+                Địa chỉ giao hàng
+
             </a>
+
+
             <a href="#" class="list-group-item list-group-item-action">
-                <i class="fas fa-box me-2"></i>Đơn mua
+
+                <i class="fas fa-box me-2"></i>
+                Đơn mua
+
             </a>
+
+
             <a href="#" class="list-group-item list-group-item-action">
-                <i class="fas fa-ticket-alt me-2"></i>Kho voucher
+
+                <i class="fas fa-ticket-alt me-2"></i>
+                Kho voucher
+
             </a>
+
+
             <a href="#" class="list-group-item list-group-item-action text-danger">
-                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+
+                <i class="fas fa-sign-out-alt me-2"></i>
+                Đăng xuất
+
             </a>
+
         </div>
 
     </div>
 
-    @* --------- CỘT PHẢI: CHI TIẾT HỒ SƠ --------- *@
+
+
+    <!-- CỘT PHẢI -->
     <div class="col-12 col-md-8 col-lg-9">
+
 
         <div class="card border-0 shadow-sm">
 
+
             <div class="card-header bg-white py-3">
-                <h5 class="mb-1">Hồ sơ của tôi</h5>
-                <p class="small text-secondary mb-0">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+
+                <h5 class="mb-1">
+                    Hồ sơ của tôi
+                </h5>
+
+
+                <p class="small text-secondary mb-0">
+                    Quản lý thông tin hồ sơ để bảo mật tài khoản
+                </p>
+
             </div>
+
+
 
             <div class="card-body p-4">
 
-                @* Mã người dùng *@
+
+                <!-- ID -->
+
                 <div class="row mb-3 align-items-center">
+
                     <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Mã người dùng
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
                         <span class="badge bg-light text-secondary border font-monospace">
-                            @_userStateService.CurrentUser.Id
+
+                            @_userStateService.CurrentUser?.Id
+
                         </span>
+
                     </div>
+
                 </div>
 
-                @* Họ và tên *@
+
+
+                <!-- FULL NAME -->
+
                 <div class="row mb-3 align-items-center">
-                    <label for="fullName" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
+
+                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Họ và tên
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
+
                         <div class="input-group">
+
+
                             <span class="input-group-text bg-white">
+
                                 <i class="fas fa-user text-secondary"></i>
+
                             </span>
-                            <input type="text" class="form-control" id="fullName" value="@_userStateService.CurrentUser.FullName" />
+
+
+                            <input type="text" class="form-control" @bind="updateModel.FullName" />
+
                         </div>
+
+
                     </div>
+
+
                 </div>
 
-                @* Email *@
+
+
+
+                <!-- EMAIL KHÔNG CHO SỬA -->
+
                 <div class="row mb-3 align-items-center">
-                    <label for="email" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
+
+                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Email
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
+
                         <div class="input-group">
+
+
                             <span class="input-group-text bg-white">
+
                                 <i class="fas fa-envelope text-secondary"></i>
+
                             </span>
-                            <input type="email" class="form-control" id="email" value="@_userStateService.CurrentUser.Email" />
+
+
+                            <input type="email" class="form-control" value="@_userStateService.CurrentUser?.Email"
+                                   disabled />
+
                         </div>
+
+
                     </div>
+
+
                 </div>
 
-                @* Số điện thoại *@
+
+
+
+                <!-- PHONE -->
+
                 <div class="row mb-3 align-items-center">
-                    <label for="phoneNumber" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
+
+                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Số điện thoại
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
+
                         <div class="input-group">
+
+
                             <span class="input-group-text bg-white">
+
                                 <i class="fas fa-phone text-secondary"></i>
-                            </span>
-                            <input type="tel" class="form-control" id="phoneNumber" value="@_userStateService.CurrentUser.PhoneNumber" />
-                        </div>
-                    </div>
-                </div>
 
-                @* Địa chỉ *@
+                            </span>
+
+
+                            <input type="tel" class="form-control" @bind="updateModel.Phone" />
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+                <!-- ADDRESS -->
+
                 <div class="row mb-3">
-                    <label for="address" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
+
+                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Địa chỉ
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
+
                         <div class="input-group">
+
+
                             <span class="input-group-text bg-white align-items-start">
+
                                 <i class="fas fa-map-marker-alt text-secondary"></i>
+
                             </span>
-                            <textarea class="form-control" id="address" rows="2">@_userStateService.CurrentUser.Address</textarea>
+
+
+                            <textarea class="form-control" rows="2" @bind="updateModel.Address">
+                            </textarea>
+
+
                         </div>
+
+
                     </div>
+
+
                 </div>
 
-                @* Ảnh đại diện *@
+
+
+
+                <!-- AVATAR -->
+
                 <div class="row mb-4">
-                    <label for="avatarUrl" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
+
+                    <label class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+
                         Ảnh đại diện
+
                     </label>
+
+
                     <div class="col-12 col-sm-9">
+
+
                         <div class="d-flex align-items-center gap-3">
-                            <img src="https://placehold.co/64x64?text=Avatar" alt="Ảnh đại diện"
+
+
+                            <img src="@(_userStateService.CurrentUser?.AvatarUrl ?? "https://placehold.co/64x64?text=Avatar")"
                                  class="rounded-circle border" width="64" height="64" />
+
+
                             <div class="flex-grow-1">
+
+
                                 <div class="input-group">
+
+
                                     <span class="input-group-text bg-white">
+
                                         <i class="fas fa-image text-secondary"></i>
+
                                     </span>
-                                    <input type="text" class="form-control" id="avatarUrl"
-                                           value="@_userStateService.CurrentUser.AvatarUrl"
-                                           placeholder="Nhập đường dẫn ảnh đại diện" />
+
+
+                                    <input type="text" class="form-control"
+                                           value="@_userStateService.CurrentUser?.AvatarUrl" disabled />
+
                                 </div>
-                                <div class="form-text">Định dạng JPEG, PNG — dung lượng tối đa 1 MB</div>
+
+
                             </div>
+
+
                         </div>
+
+
                     </div>
+
+
                 </div>
+
+
+
 
                 <hr class="my-4" />
 
-                @* Nút hành động *@
+
+
+
+                <!-- BUTTON -->
+
                 <div class="row">
+
+
                     <div class="col-12 col-sm-9 offset-sm-3">
-                        <button type="button" class="btn btn-danger px-4 me-2">
-                            <i class="fas fa-save me-1"></i>Lưu thay đổi
+
+
+                        <button type="button" class="btn btn-danger px-4 me-2" @onclick="SaveProfile">
+
+
+                            <i class="fas fa-save me-1"></i>
+
+                            Lưu thay đổi
+
+
                         </button>
-                        <button type="button" class="btn btn-outline-secondary px-4">
+
+
+
+                        <button type="button" class="btn btn-outline-secondary px-4" @onclick="CancelUpdate">
+
+
                             Huỷ
+
+
                         </button>
+
+
                     </div>
+
+
                 </div>
 
+
             </div>
+
+
         </div>
+
 
     </div>
 
+
 </div>
 
+
+
 @code {
+    private UpdateProfileDTO updateModel = new();
 
     protected override async Task OnInitializedAsync()
     {
+
         _userStateService.OnChange += StateHasChanged;
-        // Gọi hàm GetProfileAsync để lấy thông tin người dùng khi trang được khởi tạo
+
         await _userStateService.GetProfileAsync();
+
+        if (_userStateService.CurrentUser != null)
+        {
+
+            updateModel.FullName =
+                _userStateService.CurrentUser.FullName;
+
+
+            updateModel.Phone =
+                _userStateService.CurrentUser.PhoneNumber;
+
+
+            updateModel.Address =
+                _userStateService.CurrentUser.Address;
+
+        }
+
+    }
+
+    private async Task SaveProfile()
+    {
+
+        HTTPResponseData<ProfileUserDTO>? response =
+            await _userStateService.UpdateProfileAsync(updateModel);
+
+
+
+        if (response != null && response.statusCode == 200)
+        {
+
+            Console.WriteLine(
+                "Update profile successfully"
+            );
+
+        }
+        else
+        {
+
+            Console.WriteLine(
+                "Update profile failed"
+            );
+
+        }
+
+    }
+
+    private void CancelUpdate()
+    {
+
+        if (_userStateService.CurrentUser != null)
+        {
+
+            updateModel.FullName =
+                _userStateService.CurrentUser.FullName;
+
+
+            updateModel.Phone =
+                _userStateService.CurrentUser.PhoneNumber;
+
+
+            updateModel.Address =
+                _userStateService.CurrentUser.Address;
+
+        }
+
     }
 
     public void Dispose()
     {
+
         _userStateService.OnChange -= StateHasChanged;
+
     }
+
+
 }
