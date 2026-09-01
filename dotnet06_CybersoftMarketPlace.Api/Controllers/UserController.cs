@@ -66,8 +66,19 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
         public async Task<IActionResult> UpdateProfile(UpdateProfileDTO model)
         {
             string token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            
-            HTTPResponseData<ProfileUserDTO>? response = await _userService.UpdateProfileAsync(model,token);
+
+            HTTPResponseData<ProfileUserDTO>? response = await _userService.UpdateProfileAsync(model, token);
+            return StatusCode(response.statusCode, response);
+        }
+
+        [Authorize]
+        [HttpPut("updateAvatar")]
+        public async Task<IActionResult> UpdateAvatar(UpdateAvatarDTO model)
+        {
+            string token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            HTTPResponseData<ProfileUserDTO> response = await _userService.UpdateAvatarAsync(model, token);
+
             return StatusCode(response.statusCode, response);
         }
 
