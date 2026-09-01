@@ -14,9 +14,12 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
 
         private readonly IUserService _userService;
         //Chỉ làm việc với service, không làm việc trực tiếp với repository
-        public UserController(IUserService userService)
+        private readonly JwtAuthService _jwtService;
+
+        public UserController(IUserService userService, JwtAuthService jwtService)
         {
             _userService = userService;
+            _jwtService = jwtService;
         }
         /// <summary>
         /// Tạo user từ view đăng ký tài khoản người dùng
@@ -87,9 +90,10 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
         [HttpPut("changePassword")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {
-            string userId = User.FindFirst("id")?.Value;
+            string userId = HttpContext.User.Identity.Name;
 
             HTTPResponseData<string> response = await _userService.ChangePasswordAsync(userId, model);
+
             return StatusCode(response.statusCode, response);
         }
 

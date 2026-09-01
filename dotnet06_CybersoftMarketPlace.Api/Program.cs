@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Infrastructure.Models;
@@ -110,7 +111,7 @@ builder.Services
                 RoleClaimType = ClaimTypes.Role,
 
                 // Ánh xạ claim chứa tên người dùng
-                NameClaimType = "UserName"
+                NameClaimType = JwtRegisteredClaimNames.Name,
             };
     });
 

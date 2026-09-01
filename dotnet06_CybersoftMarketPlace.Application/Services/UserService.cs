@@ -33,12 +33,14 @@ public class UserService : IUserService
         _jwtAuthService = jwtAuthService;
     }
 
-    public async Task<HTTPResponseData<string>> ChangePasswordAsync(
+public async Task<HTTPResponseData<string>> ChangePasswordAsync(
     string userId,
     ChangePasswordDTO model)
+{
+    try
     {
-        User? user =
-            await _unitOfWork.UserRepository
+        // 1. Lấy user từ token
+        User? user = await _unitOfWork.UserRepository
             .SingleOrDefault(x => x.Id.ToString() == userId);
 
 
@@ -54,29 +56,65 @@ public class UserService : IUserService
         }
 
 
-        bool checkPassword =
+        // 2. Kiểm tra mật khẩu cũ
+        bool isOldPasswordCorrect =
             HelperFunction.VerifyPassword(
                 model.OldPassword,
                 user.PasswordHash
             );
 
 
-        if (!checkPassword)
+        if (!isOldPasswordCorrect)
         {
             return new HTTPResponseData<string>
             {
                 DataResponse = null,
-                Message = UserResponseMessageDTO.OldPasswordIncorrect,
+                Message = UserResponseMessageDTO.InvalidOldPassword,
                 statusCode = 400,
                 Timestamp = DateTime.Now
             };
         }
 
 
+        // 3. Kiểm tra mật khẩu mới có trùng mật khẩu cũ không
+        bool isSamePassword =
+            HelperFunction.VerifyPassword(
+                model.NewPassword,
+                user.PasswordHash
+            );
+
+
+        if (isSamePassword)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.NewPasswordCannotBeOldPassword,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        // 4. Kiểm tra Confirm Password
+        if (model.NewPassword != model.ConfirmPassword)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.PasswordConfirmNotMatch,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        // 5. Hash mật khẩu mới
         user.PasswordHash =
             HelperFunction.HashPassword(model.NewPassword);
 
 
+        // 6. Lưu database
         await _unitOfWork.SaveChangesAsync();
 
 
@@ -88,6 +126,17 @@ public class UserService : IUserService
             Timestamp = DateTime.Now
         };
     }
+    catch (Exception ex)
+    {
+        return new HTTPResponseData<string>
+        {
+            DataResponse = null,
+            Message = "Đổi mật khẩu thất bại: " + ex.Message,
+            statusCode = 500,
+            Timestamp = DateTime.Now
+        };
+    }
+}
 
     public async Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token)
     {
