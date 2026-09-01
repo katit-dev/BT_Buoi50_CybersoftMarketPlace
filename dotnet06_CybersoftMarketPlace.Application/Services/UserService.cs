@@ -33,9 +33,60 @@ public class UserService : IUserService
         _jwtAuthService = jwtAuthService;
     }
 
-    public Task<HTTPResponseData<string>> ChangePasswordAsync(string userId, ChangePasswordDTO model)
+    public async Task<HTTPResponseData<string>> ChangePasswordAsync(
+    string userId,
+    ChangePasswordDTO model)
     {
-        throw new NotImplementedException();
+        User? user =
+            await _unitOfWork.UserRepository
+            .SingleOrDefault(x => x.Id.ToString() == userId);
+
+
+        if (user == null)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.UserNotFound,
+                statusCode = 404,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        bool checkPassword =
+            HelperFunction.VerifyPassword(
+                model.OldPassword,
+                user.PasswordHash
+            );
+
+
+        if (!checkPassword)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = null,
+                Message = UserResponseMessageDTO.OldPasswordIncorrect,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
+        }
+
+
+        user.PasswordHash =
+            HelperFunction.HashPassword(model.NewPassword);
+
+
+        await _unitOfWork.SaveChangesAsync();
+
+
+        return new HTTPResponseData<string>
+        {
+            DataResponse = UserResponseMessageDTO.ChangePasswordSuccess,
+            Message = UserResponseMessageDTO.ChangePasswordSuccess,
+            statusCode = 200,
+            Timestamp = DateTime.Now
+        };
     }
 
     public async Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token)
