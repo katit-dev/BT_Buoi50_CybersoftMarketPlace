@@ -84,6 +84,8 @@ public class UserStateService
         await _localStorageService.RemoveItemAsync("accessToken");
         _httpClient.DefaultRequestHeaders.Authorization = null;
         StateHasChanged();
+        // Chuyển về trang Login
+        _navigationManager.NavigateTo("/login");
     }
 
     public async Task<HTTPResponseData<ProfileUserDTO>?> UpdateProfileAsync(
