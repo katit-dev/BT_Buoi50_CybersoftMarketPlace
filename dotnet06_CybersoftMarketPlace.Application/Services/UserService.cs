@@ -2,6 +2,7 @@
 
 
 using backend_netcore_dotnet06.Helper;
+using dotnet06_CybersoftMarketPlace.Application.DTOs;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,11 @@ public class UserService : IUserService
         _userRepository = userRepository;
         _userRoleRepository = userRoleRepository;
         _jwtAuthService = jwtAuthService;
+    }
+
+    public Task<HTTPResponseData<string>> ChangePasswordAsync(string userId, ChangePasswordDTO model)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token)
