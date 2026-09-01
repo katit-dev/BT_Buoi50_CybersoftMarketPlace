@@ -4,6 +4,7 @@
 
 @inject UserStateService _userStateService
 @inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 @implements IDisposable
 
@@ -20,8 +21,8 @@
             <div class="card-body text-center p-4">
 
                 <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                                                 ?? "https://placehold.co/120x120?text=Avatar")" alt="Ảnh đại diện"
-                     class="rounded-circle border mb-3" width="120" height="120" />
+                                                                                           ?? "https://placehold.co/120x120?text=Avatar")"
+                     alt="Ảnh đại diện" class="rounded-circle border mb-3" width="120" height="120" />
 
                 <h6 class="fw-semibold mb-1">
                     @_userStateService.CurrentUser?.FullName
@@ -85,9 +86,7 @@
             </a>
 
 
-            <button type="button"
-                    class="list-group-item list-group-item-action text-danger"
-                    @onclick="Logout">
+            <button type="button" class="list-group-item list-group-item-action text-danger" @onclick="Logout">
 
                 <i class="fas fa-sign-out-alt me-2"></i>
 
@@ -273,8 +272,8 @@
                         <div class="d-flex align-items-center gap-3">
 
                             <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                                                                         ?? "https://placehold.co/64x64?text=Avatar")" alt="Ảnh đại diện"
-                                 class="rounded-circle border" width="64" height="64" />
+                                                                                                                                           ?? "https://placehold.co/64x64?text=Avatar")"
+                                 alt="Ảnh đại diện" class="rounded-circle border" width="64" height="64" />
 
 
                             <div class="flex-grow-1">
@@ -378,6 +377,17 @@
         _userStateService.OnChange += StateHasChanged;
 
         await _userStateService.GetProfileAsync();
+
+
+        if (_userStateService.CurrentUser == null)
+        {
+            _userStateService.OnChange -= StateHasChanged;
+
+            NavigationManager.NavigateTo("/login");
+
+            return;
+        }
+
 
         LoadCurrentUserToForm();
     }
