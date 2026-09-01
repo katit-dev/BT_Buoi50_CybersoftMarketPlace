@@ -174,6 +174,86 @@ public class UserService : IUserService
 
     }
 
+    public async Task<HTTPResponseData<ProfileUserDTO>> UpdateAvatarAsync(
+    UpdateAvatarDTO model,
+    string token)
+    {
+        try
+        {
+
+            string? userId = _jwtAuthService.DecodePayloadTokenId(token);
+
+            if (userId == null)
+            {
+                return new HTTPResponseData<ProfileUserDTO>
+                {
+                    DataResponse = null,
+                    Message = UserResponseMessageDTO.InvalidToken,
+                    statusCode = 401,
+                    Timestamp = DateTime.Now
+                };
+            }
+
+            User? user = await _unitOfWork.UserRepository.SingleOrDefault(u => u.Id.ToString() == userId);
+
+            if (user == null)
+            {
+                return new HTTPResponseData<ProfileUserDTO>
+                {
+                    DataResponse = null,
+                    Message = UserResponseMessageDTO.UserNotFound,
+                    statusCode = 404,
+                    Timestamp = DateTime.Now
+                };
+            }
+
+            user.Avatar = model.AvatarUrl;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            ProfileUserDTO profileUserDTO =
+                new ProfileUserDTO
+                {
+                    Id = user.Id.ToString(),
+
+                    FullName = user.FullName,
+
+                    Email = user.Email,
+
+                    PhoneNumber = user.Phone,
+
+                    Address = user.Address,
+
+                    AvatarUrl = user.Avatar
+                };
+
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = profileUserDTO,
+
+                Message = UserResponseMessageDTO.UpdateAvatarSuccess,
+
+                statusCode = 200,
+
+                Timestamp = DateTime.Now
+            };
+
+        }
+        catch (Exception ex)
+        {
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = null,
+
+                Message = UserResponseMessageDTO.UpdateAvatarFailed + ex.Message,
+
+                statusCode = 400,
+
+                Timestamp = DateTime.Now
+            };
+        }
+    }
+
     public async Task<HTTPResponseData<ProfileUserDTO>> UpdateProfileAsync(
     UpdateProfileDTO model,
     string token)
