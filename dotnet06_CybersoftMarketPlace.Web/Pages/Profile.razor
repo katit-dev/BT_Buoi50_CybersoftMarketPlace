@@ -20,11 +20,8 @@
             <div class="card-body text-center p-4">
 
                 <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                            ?? "https://placehold.co/120x120?text=Avatar")"
-                     alt="Ảnh đại diện"
-                     class="rounded-circle border mb-3"
-                     width="120"
-                     height="120" />
+                                                 ?? "https://placehold.co/120x120?text=Avatar")" alt="Ảnh đại diện"
+                     class="rounded-circle border mb-3" width="120" height="120" />
 
                 <h6 class="fw-semibold mb-1">
                     @_userStateService.CurrentUser?.FullName
@@ -34,9 +31,7 @@
                     @_userStateService.CurrentUser?.Email
                 </p>
 
-                <button type="button"
-                        class="btn btn-outline-danger btn-sm"
-                        @onclick="FocusAvatarInput">
+                <button type="button" class="btn btn-outline-danger btn-sm" @onclick="FocusAvatarInput">
 
                     <i class="fas fa-camera me-1"></i>
                     Đổi ảnh đại diện
@@ -50,8 +45,7 @@
 
         <div class="list-group shadow-sm">
 
-            <a href="#"
-               class="list-group-item list-group-item-action active">
+            <a href="#" class="list-group-item list-group-item-action active">
 
                 <i class="fas fa-user me-2"></i>
                 Hồ sơ của tôi
@@ -59,8 +53,7 @@
             </a>
 
 
-            <a href="#"
-               class="list-group-item list-group-item-action">
+            <a href="#" class="list-group-item list-group-item-action">
 
                 <i class="fas fa-lock me-2"></i>
                 Đổi mật khẩu
@@ -68,8 +61,7 @@
             </a>
 
 
-            <a href="#"
-               class="list-group-item list-group-item-action">
+            <a href="#" class="list-group-item list-group-item-action">
 
                 <i class="fas fa-map-marker-alt me-2"></i>
                 Địa chỉ giao hàng
@@ -77,8 +69,7 @@
             </a>
 
 
-            <a href="#"
-               class="list-group-item list-group-item-action">
+            <a href="#" class="list-group-item list-group-item-action">
 
                 <i class="fas fa-box me-2"></i>
                 Đơn mua
@@ -86,8 +77,7 @@
             </a>
 
 
-            <a href="#"
-               class="list-group-item list-group-item-action">
+            <a href="#" class="list-group-item list-group-item-action">
 
                 <i class="fas fa-ticket-alt me-2"></i>
                 Kho voucher
@@ -95,13 +85,15 @@
             </a>
 
 
-            <a href="#"
-               class="list-group-item list-group-item-action text-danger">
+            <button type="button"
+                    class="list-group-item list-group-item-action text-danger"
+                    @onclick="Logout">
 
                 <i class="fas fa-sign-out-alt me-2"></i>
+
                 Đăng xuất
 
-            </a>
+            </button>
 
         </div>
 
@@ -151,8 +143,7 @@
                 @* Họ và tên *@
                 <div class="row mb-3 align-items-center">
 
-                    <label for="fullName"
-                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="fullName" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Họ và tên
 
@@ -169,10 +160,7 @@
 
                             </span>
 
-                            <input type="text"
-                                   class="form-control"
-                                   id="fullName"
-                                   @bind="updateProfileModel.FullName" />
+                            <input type="text" class="form-control" id="fullName" @bind="updateProfileModel.FullName" />
 
                         </div>
 
@@ -184,8 +172,7 @@
                 @* Email - chỉ xem *@
                 <div class="row mb-3 align-items-center">
 
-                    <label for="email"
-                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="email" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Email
 
@@ -202,11 +189,8 @@
 
                             </span>
 
-                            <input type="email"
-                                   class="form-control"
-                                   id="email"
-                                   value="@_userStateService.CurrentUser?.Email"
-                                   disabled />
+                            <input type="email" class="form-control" id="email"
+                                   value="@_userStateService.CurrentUser?.Email" disabled />
 
                         </div>
 
@@ -218,8 +202,7 @@
                 @* Số điện thoại *@
                 <div class="row mb-3 align-items-center">
 
-                    <label for="phoneNumber"
-                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="phoneNumber" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Số điện thoại
 
@@ -236,10 +219,7 @@
 
                             </span>
 
-                            <input type="tel"
-                                   class="form-control"
-                                   id="phoneNumber"
-                                   @bind="updateProfileModel.Phone" />
+                            <input type="tel" class="form-control" id="phoneNumber" @bind="updateProfileModel.Phone" />
 
                         </div>
 
@@ -251,8 +231,7 @@
                 @* Địa chỉ *@
                 <div class="row mb-3">
 
-                    <label for="address"
-                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="address" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Địa chỉ
 
@@ -269,10 +248,7 @@
 
                             </span>
 
-                            <textarea class="form-control"
-                                      id="address"
-                                      rows="2"
-                                      @bind="updateProfileModel.Address">
+                            <textarea class="form-control" id="address" rows="2" @bind="updateProfileModel.Address">
                             </textarea>
 
                         </div>
@@ -285,8 +261,7 @@
                 @* Ảnh đại diện *@
                 <div class="row mb-4">
 
-                    <label for="avatarUrl"
-                           class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
+                    <label for="avatarUrl" class="col-12 col-sm-3 col-form-label text-sm-end text-secondary">
 
                         Ảnh đại diện
 
@@ -298,11 +273,8 @@
                         <div class="d-flex align-items-center gap-3">
 
                             <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                                        ?? "https://placehold.co/64x64?text=Avatar")"
-                                 alt="Ảnh đại diện"
-                                 class="rounded-circle border"
-                                 width="64"
-                                 height="64" />
+                                                                         ?? "https://placehold.co/64x64?text=Avatar")" alt="Ảnh đại diện"
+                                 class="rounded-circle border" width="64" height="64" />
 
 
                             <div class="flex-grow-1">
@@ -315,11 +287,8 @@
 
                                     </span>
 
-                                    <input type="text"
-                                           class="form-control"
-                                           id="avatarUrl"
-                                           @bind="updateAvatarModel.AvatarUrl"
-                                           placeholder="Nhập đường dẫn ảnh đại diện" />
+                                    <input type="text" class="form-control" id="avatarUrl"
+                                           @bind="updateAvatarModel.AvatarUrl" placeholder="Nhập đường dẫn ảnh đại diện" />
 
                                 </div>
 
@@ -338,8 +307,7 @@
                 @* Thông báo *@
                 @if (!string.IsNullOrEmpty(message))
                 {
-                    <div class="alert @(isSuccess ? "alert-success" : "alert-danger")"
-                         role="alert">
+                    <div class="alert @(isSuccess ? "alert-success" : "alert-danger")" role="alert">
 
                         @message
 
@@ -352,15 +320,12 @@
 
                     <div class="col-12 col-sm-9 offset-sm-3">
 
-                        <button type="button"
-                                class="btn btn-danger px-4 me-2"
-                                @onclick="SaveChanges"
+                        <button type="button" class="btn btn-danger px-4 me-2" @onclick="SaveChanges"
                                 disabled="@isLoading">
 
                             @if (isLoading)
                             {
-                                <span class="spinner-border spinner-border-sm me-1"
-                                      role="status">
+                                <span class="spinner-border spinner-border-sm me-1" role="status">
                                 </span>
 
                                 <span>Đang lưu...</span>
@@ -374,9 +339,7 @@
                         </button>
 
 
-                        <button type="button"
-                                class="btn btn-outline-secondary px-4"
-                                @onclick="CancelChanges"
+                        <button type="button" class="btn btn-outline-secondary px-4" @onclick="CancelChanges"
                                 disabled="@isLoading">
 
                             Huỷ
@@ -528,6 +491,10 @@
         );
     }
 
+    private async Task Logout()
+    {
+        await _userStateService.LogoutAsync();
+    }
 
     public void Dispose()
     {
