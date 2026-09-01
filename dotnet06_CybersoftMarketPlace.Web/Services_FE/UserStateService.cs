@@ -195,5 +195,49 @@ UpdateAvatarAsync(UpdateAvatarDTO model)
             return null;
         }
     }
+    public async Task<HTTPResponseData<string>?> ChangePasswordAsync(
+    ChangePasswordDTO model)
+    {
+        try
+        {
+            string? token =
+                await _localStorageService
+                .GetItemAsync<string>("accessToken");
+
+
+            if (token == null)
+            {
+                return null;
+            }
+
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    token
+                );
+
+
+            HttpResponseMessage response =
+                await _httpClient.PutAsJsonAsync(
+                    "/api/User/changePassword",
+                    model
+                );
+
+
+            HTTPResponseData<string>? responseData =
+                await response.Content
+                .ReadFromJsonAsync<HTTPResponseData<string>>();
+
+
+            return responseData;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+
+            return null;
+        }
+    }
 
 }
