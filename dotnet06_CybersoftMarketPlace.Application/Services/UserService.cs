@@ -37,10 +37,8 @@ public class UserService : IUserService
     string userId,
     ChangePasswordDTO model)
     {
-        User? user =
-            await _unitOfWork.UserRepository
-            .SingleOrDefault(x => x.Id.ToString() == userId);
-
+        
+        User? user = await _unitOfWork.UserRepository.SingleOrDefault(x => x.Id.ToString() == userId);
 
         if (user == null)
         {
