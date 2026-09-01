@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,7 +13,7 @@ public class UserStateService
     public ProfileUserDTO? CurrentUser { get; private set; }
     public readonly NavigationManager _navigationManager;
 
-    public UserStateService(ILocalStorageService localStorageService, IHttpClientFactory httpClientFactory,NavigationManager nav)
+    public UserStateService(ILocalStorageService localStorageService, IHttpClientFactory httpClientFactory, NavigationManager nav)
     {
         _localStorageService = localStorageService;
         _httpClient = httpClientFactory.CreateClient("CybersoftMarketplaceApi");
@@ -40,7 +41,7 @@ public class UserStateService
                 _navigationManager.NavigateTo("/profile"); //Chuyển hướng về trang chủ sau khi đăng nhập thành công
 
                 StateHasChanged();
-                
+
             }
         }
     }
@@ -67,7 +68,8 @@ public class UserStateService
                     StateHasChanged();
                 }
             }
-        }else
+        }
+        else
         {
             CurrentUser = null;
             accessToken = "";
@@ -86,54 +88,109 @@ public class UserStateService
 
     public async Task<HTTPResponseData<ProfileUserDTO>?> UpdateProfileAsync(
     UpdateProfileDTO model)
-{
-    try
     {
-        string? token = await _localStorageService
-            .GetItemAsync<string>("accessToken");
-
-
-        if (token == null)
+        try
         {
+            string? token = await _localStorageService
+                .GetItemAsync<string>("accessToken");
+
+
+            if (token == null)
+            {
+                return null;
+            }
+
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    token
+                );
+
+
+            HttpResponseMessage response =
+                await _httpClient.PutAsJsonAsync(
+                    "/api/User/updateProfile",
+                    model
+                );
+
+
+            HTTPResponseData<ProfileUserDTO>? responseData =
+                await response.Content
+                .ReadFromJsonAsync<HTTPResponseData<ProfileUserDTO>>();
+
+
+            if (responseData != null
+                && responseData.statusCode == 200)
+            {
+                CurrentUser = responseData.DataResponse;
+
+                StateHasChanged();
+            }
+
+
+            return responseData;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
             return null;
         }
-
-
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue(
-                "Bearer",
-                token
-            );
-
-
-        HttpResponseMessage response =
-            await _httpClient.PutAsJsonAsync(
-                "/api/User/updateProfile",
-                model
-            );
-
-
-        HTTPResponseData<ProfileUserDTO>? responseData =
-            await response.Content
-            .ReadFromJsonAsync<HTTPResponseData<ProfileUserDTO>>();
-
-
-        if(responseData != null 
-            && responseData.statusCode == 200)
-        {
-            CurrentUser = responseData.DataResponse;
-
-            StateHasChanged();
-        }
-
-
-        return responseData;
     }
-    catch(Exception ex)
+
+    public async Task<HTTPResponseData<ProfileUserDTO>?>
+UpdateAvatarAsync(UpdateAvatarDTO model)
     {
-        Console.WriteLine(ex.Message);
-        return null;
+        try
+        {
+            string? token =
+                await _localStorageService
+                .GetItemAsync<string>("accessToken");
+
+
+            if (token == null)
+            {
+                return null;
+            }
+
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    "Bearer",
+                    token
+                );
+
+
+            HttpResponseMessage response =
+                await _httpClient.PutAsJsonAsync(
+                    "/api/User/updateAvatar",
+                    model
+                );
+
+
+            HTTPResponseData<ProfileUserDTO>? responseData =
+                await response.Content
+                .ReadFromJsonAsync
+                <HTTPResponseData<ProfileUserDTO>>();
+
+
+            if (responseData != null
+                && responseData.statusCode == 200)
+            {
+                CurrentUser =
+                    responseData.DataResponse;
+
+                StateHasChanged();
+            }
+
+
+            return responseData;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
     }
-}
 
 }
