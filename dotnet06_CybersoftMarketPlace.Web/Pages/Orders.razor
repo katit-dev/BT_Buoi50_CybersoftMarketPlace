@@ -1,0 +1,183 @@
+@page "/profile/orders"
+
+@layout HomePageMaster
+
+
+@using Application.DTOs
+
+
+@inject OrderStateService _orderStateService
+
+
+
+<div class="card shadow-sm">
+
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+            Đơn mua
+        </h5>
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+        @if(orders == null)
+        {
+            <p>
+                Đang tải dữ liệu...
+            </p>
+        }
+        else if(!orders.Any())
+        {
+            <p>
+                Bạn chưa có đơn hàng nào.
+            </p>
+        }
+        else
+        {
+
+            foreach(var order in orders)
+            {
+
+                <div class="card mb-3">
+
+
+                    <div class="card-body">
+
+
+                        <div class="d-flex justify-content-between">
+
+
+                            <div>
+
+                                <b>
+                                    Đơn #@order.OrderId
+                                </b>
+
+
+                                <div>
+                                    @order.CreatedAt.ToString("dd/MM/yyyy")
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="text-danger fw-bold">
+
+                                @order.TotalAmount.ToString("N0")
+                                đ
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <hr />
+
+
+
+                        @foreach(var item in order.Items)
+                        {
+
+                            <div class="d-flex mb-3">
+
+
+                                <img src="@item.ImageUrl"
+                                     width="70"
+                                     height="70"
+                                     class="rounded border me-3" />
+
+
+
+                                <div>
+
+
+                                    <div>
+                                        @item.ProductName
+                                    </div>
+
+
+                                    <small>
+                                        @item.VariantName
+                                    </small>
+
+
+                                    <div>
+                                        x @item.Quantity
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+                        }
+
+
+
+                        <div>
+
+                            Trạng thái:
+
+                            <span class="badge bg-warning">
+
+                                @order.Status
+
+                            </span>
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            }
+
+        }
+
+
+    </div>
+
+</div>
+
+
+
+@code {
+
+
+    private List<OrderHistoryDTO>? orders;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var response =
+            await _orderStateService
+            .GetMyOrdersAsync();
+
+
+
+        if(response != null 
+            && response.statusCode == 200)
+        {
+
+            orders =
+                response.DataResponse;
+
+        }
+
+    }
+
+}
