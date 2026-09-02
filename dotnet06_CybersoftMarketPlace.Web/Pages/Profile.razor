@@ -22,7 +22,7 @@
             <div class="card-body text-center p-4">
 
                 <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                                                                                                                ?? "https://placehold.co/120x120?text=Avatar")"
+                                                                                                                                     ?? "https://placehold.co/120x120?text=Avatar")"
                      alt="Ảnh đại diện" class="rounded-circle border mb-3" width="120" height="120" />
 
                 <h6 class="fw-semibold mb-1">
@@ -71,9 +71,10 @@
             </a>
 
 
-            <a href="#" class="list-group-item list-group-item-action">
+            <a href="/profile/orders" class="list-group-item list-group-item-action">
 
                 <i class="fas fa-box me-2"></i>
+
                 Đơn mua
 
             </a>
@@ -273,7 +274,7 @@
                         <div class="d-flex align-items-center gap-3">
 
                             <img src="@(_userStateService.CurrentUser?.AvatarUrl
-                                                                                                                                                                            ?? "https://placehold.co/64x64?text=Avatar")"
+                                                                                                                                                                                                             ?? "https://placehold.co/64x64?text=Avatar")"
                                  alt="Ảnh đại diện" class="rounded-circle border" width="64" height="64" />
 
 
