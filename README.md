@@ -1,254 +1,278 @@
-\# CybersoftMarketPlace - Buổi 49 Profile Module
+# CybersoftMarketPlace - Buổi 49 Profile Module
 
-
-
-\## Overview
-
-
+## Overview
 
 Hoàn thành chức năng Profile cho dự án CybersoftMarketPlace (.NET 10 + Blazor).
 
-
-
 Các chức năng đã thực hiện:
 
+- Update Profile
+- Update Avatar
+- Change Password
+- Logout
+- Route Protection
+- Order History
 
 
-\- Update Profile
-
-\- Update Avatar
-
-\- Change Password
-
-\- Logout
-
-\- Route protection
-
-\- Order History
+# Features Completed
 
 
+## 1. Update Profile
 
+Cho phép người dùng cập nhật thông tin cá nhân:
 
-
-\---
-
-
-
-\# Features Completed
-
-
-
-
-
-\## 1. Update Profile
-
-
-
-Cho phép người dùng cập nhật:
-
-
-
-\- Full Name
-
-\- Phone
-
-\- Address
-
-
-
+- Full Name
+- Phone
+- Address
 
 
 API:
 
-
-
+PUT /api/User/updateProfile
 
 
 Screenshot:
 
-
-
-!\[Update Profile](screenshots/buoi49\_updateProfile.png)
-
+![Update Profile](screenshots/buoi49_updateProfile.png)
 
 
 
+## 2. Update Avatar
 
-
-
-\---
-
-
-
-\## 2. Update Avatar
-
-
-
-Cho phép cập nhật ảnh đại diện bằng Avatar URL.
-
-
-
+Cho phép người dùng cập nhật ảnh đại diện.
 
 
 API:
 
-
-
+PUT /api/User/updateAvatar
 
 
 Screenshot:
 
-
-
-!\[Update Avatar](screenshots/buoi49\_updateAvatar.png)
-
+![Update Avatar](screenshots/buoi49_updateAvatar.png)
 
 
 
+## 3. Change Password
+
+Người dùng có thể thay đổi mật khẩu.
 
 
+DTO:
 
-\---
-
-
-
-\## 3. Change Password
+ChangePasswordDTO
 
 
+Bao gồm:
 
-Người dùng có thể đổi mật khẩu.
+- OldPassword
+- NewPassword
+- ConfirmPassword
 
+
+API:
+
+PUT /api/User/changePassword
 
 
 Kiểm tra:
 
+- Mật khẩu cũ phải chính xác
+- Mật khẩu mới không được trùng mật khẩu cũ
+- Confirm Password phải giống New Password
 
 
-\- Password cũ
+Screenshot:
 
-\- Password mới
-
-\- Confirm Password
+![Change Password](screenshots/buoi49_ChangePassword.png)
 
 
 
+## 4. Logout
+
+Chức năng Logout thực hiện:
+
+- Xóa JWT Token trong LocalStorage
+- Clear User State
+- Xóa Authorization Header
+
+
+Screenshot:
+
+![Logout](screenshots/buoi49_Logout.png)
+
+
+
+## 5. Route Protection
+
+Bảo vệ trang Profile khi người dùng chưa đăng nhập.
+
+
+Flow:
+
+User Logout
+
+↓
+
+Remove JWT Token
+
+↓
+
+Truy cập /profile
+
+↓
+
+Kiểm tra CurrentUser
+
+↓
+
+Redirect về Login
+
+
+
+## 6. Order History
+
+Người dùng có thể xem danh sách đơn hàng của chính mình.
 
 
 API:
 
+GET /api/Order/myOrders
 
 
+Security:
+
+UserId được lấy từ JWT Token.
+
+Client không gửi UserId.
 
 
-Screenshot:
+Xử lý Database:
+
+- Include()
+- ThenInclude()
+- AsNoTracking()
 
 
+Mục đích:
 
-!\[Change Password](screenshots/buoi49\_ChangePassword.png)
-
-
-
-
-
-
-
-\---
-
-
-
-\## 4. Logout \& Authentication Protection
-
-
-
-Logout thực hiện:
-
-
-
-\- Xóa JWT Token trong LocalStorage
-
-\- Clear User State
-
-\- Navigate về Login
-
-
-
-
-
-Kiểm tra:
-
-
-
-\- Sau khi logout truy cập `/profile`
-
-\- User bị redirect về `/login`
-
-
+- Tránh lỗi N+1 Query
+- Tối ưu truy vấn chỉ đọc
 
 
 
 Screenshot:
 
-
-
-!\[Logout](screenshots/buoi49\_Logout.png)
-
+![My Orders](screenshots/buoi49_GetMyOrders.png)
 
 
 
+# Architecture
+
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Unit Of Work
+
+↓
+
+Repository
+
+↓
+
+Database
 
 
 
-\---
+# Technologies
+
+
+Backend:
+
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server
+- JWT Authentication
+- Repository Pattern
+- Unit Of Work Pattern
+
+
+Frontend:
+
+- Blazor WebAssembly
+- Bootstrap
+- HttpClient
+- LocalStorage
 
 
 
-\## 5. Order History
+# API Endpoints
+
+
+## User API
+
+
+POST /api/User/Login
+
+GET /api/User/getProfile
+
+PUT /api/User/updateProfile
+
+PUT /api/User/updateAvatar
+
+PUT /api/User/changePassword
 
 
 
-Lấy danh sách đơn hàng của user đang đăng nhập.
+## Order API
+
+
+GET /api/Order/myOrders
 
 
 
-UserId được lấy từ JWT Token, không nhận từ client.
+# Testing Completed
 
 
+- Login successfully
+- Get user profile
+- Update profile
+- Update avatar
+- Change password
+- Logout
+- Block profile page after logout
+- Get order history
 
 
-
-API:
-
+# Screenshots
 
 
+## Update Profile
+
+![Update Profile](screenshots/buoi49_updateProfile.png)
 
 
-Xử lý EF Core:
+## Update Avatar
+
+![Update Avatar](screenshots/buoi49_updateAvatar.png)
 
 
+## Change Password
 
-\- Include()
-
-\- ThenInclude()
-
-\- AsNoTracking()
+![Change Password](screenshots/buoi49_ChangePassword.png)
 
 
+## Logout
 
-Tránh lỗi N+1 Query.
-
-
-
+![Logout](screenshots/buoi49_Logout.png)
 
 
-Screenshot:
+## Order History
 
-
-
-!\[My Orders](screenshots/buoi49\_GetMyOrders.png)
-
-
-
-
-
-
-
+![Order History](screenshots/buoi49_GetMyOrders.png)
