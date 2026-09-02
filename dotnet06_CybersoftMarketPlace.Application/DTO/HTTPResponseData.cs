@@ -20,7 +20,8 @@ public static class UserResponseMessageDTO
         "User registration failed.";
 
     public const string EmailUsernameOrPhoneExists =
-        "Email, username, or phone already exists.";
+        "Email, username, or phone number already exists.";
+
 
 
     // Login
@@ -28,51 +29,68 @@ public static class UserResponseMessageDTO
         "User logged in successfully.";
 
     public const string InvalidLogin =
-        "Invalid email, username, phone, or password.";
+        "Invalid email, username, phone number, or password.";
+
 
 
     // User
     public const string UserNotFound =
-        "Username/Phone/Email or password is incorrect.";
+        "User not found.";
 
     public const string InvalidToken =
         "Invalid token.";
 
 
+
     // Profile
     public const string GetProfileSuccess =
-        "Get profile successfully.";
+        "Get user profile successfully.";
 
     public const string UpdateProfileSuccess =
-        "Update profile successfully.";
+        "Update user profile successfully.";
 
     public const string UpdateProfileFailed =
-        "Update profile failed.";
+        "Update user profile failed.";
 
-    // avatar
+
+
+    // Avatar
     public const string UpdateAvatarSuccess =
-    "Update avatar successfully.";
+        "Update avatar successfully.";
 
     public const string UpdateAvatarFailed =
         "Update avatar failed.";
 
-    // Change password
+
+
+    // Change Password
     public const string ChangePasswordSuccess =
-        "Đổi mật khẩu thành công.";
+        "Change password successfully.";
 
     public const string OldPasswordIncorrect =
-        "Mật khẩu hiện tại không chính xác.";
+        "Current password is incorrect.";
 
     public const string ChangePasswordFailed =
-        "Đổi mật khẩu thất bại.";
+        "Change password failed.";
 
     public const string InvalidOldPassword =
-    "Mật khẩu cũ không chính xác.";
+        "Old password is incorrect.";
 
     public const string PasswordConfirmNotMatch =
-        "Mật khẩu xác nhận không khớp.";
+        "Password confirmation does not match.";
 
     public const string NewPasswordCannotBeOldPassword =
-        "Mật khẩu mới không được trùng với mật khẩu cũ.";
+        "New password cannot be the same as the old password.";
+}
 
+public static class OrderResponseMessageDTO
+{
+    public const string GetMyOrdersSuccess =
+        "Get order history successfully.";
+
+    public const string GetMyOrdersFailed =
+        "Failed to get order history.";
+
+    public const string OrderNotFound =
+        "Order not found.";
 }

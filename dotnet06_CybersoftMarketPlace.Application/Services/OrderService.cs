@@ -1,11 +1,15 @@
 using dotnet06_CybersoftMarketPlace.Application.DTOs;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+
+
 public interface IOrderService
 {
     Task<HTTPResponseData<List<OrderHistoryDTO>>>
-    GetMyOrdersAsync(string userId);
+        GetMyOrdersAsync(string userId);
 }
+
+
 
 public class OrderService : IOrderService
 {
@@ -17,14 +21,16 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
 
+
+
     public async Task<HTTPResponseData<List<OrderHistoryDTO>>>
         GetMyOrdersAsync(string userId)
     {
         try
         {
+            // Lấy danh sách order của user hiện tại
+            // UserId được lấy từ JWT Token
 
-            // Lấy danh sách order của chính user đang đăng nhập
-            // UserId lấy từ JWT -> truyền xuống service
             IQueryable<Order> query =
                 await _unitOfWork
                 .OrderRepository
@@ -37,7 +43,9 @@ public class OrderService : IOrderService
 
 
 
-            // Include tránh lỗi N+1 Query
+            // Include dữ liệu liên quan
+            // Tránh lỗi N+1 Query
+
             List<Order> orders =
                 await query
 
@@ -61,7 +69,6 @@ public class OrderService : IOrderService
 
             foreach(Order order in orders)
             {
-
                 OrderHistoryDTO orderDTO =
                     new OrderHistoryDTO();
 
@@ -85,16 +92,15 @@ public class OrderService : IOrderService
 
 
                 // Model Order không có Status
-                // tự xử lý theo yêu cầu đề
-                orderDTO.Status =
-                    "Đang xử lý";
+                // Tự xử lý theo yêu cầu đề
 
+                orderDTO.Status =
+                    "Processing";
 
 
 
                 foreach(OrderItem item in order.OrderItems)
                 {
-
                     OrderHistoryItemDTO itemDTO =
                         new OrderHistoryItemDTO();
 
@@ -106,12 +112,14 @@ public class OrderService : IOrderService
 
 
                     // Variant -> Product -> Name
+
                     itemDTO.ProductName =
                         item.Variant.Product.Name;
 
 
 
-                    // ProductVariant không có Name
+                    // ProductVariant sử dụng VariantName
+
                     itemDTO.VariantName =
                         item.Variant.VariantName
                         ??
@@ -119,7 +127,8 @@ public class OrderService : IOrderService
 
 
 
-                    // Lấy ảnh của Variant
+                    // Lấy ảnh từ ProductVariant
+
                     itemDTO.ImageUrl =
                         item.Variant.Image
                         ??
@@ -137,7 +146,8 @@ public class OrderService : IOrderService
 
 
 
-                    // Backend tự tính SubTotal
+                    // Backend tính SubTotal
+
                     itemDTO.SubTotal =
                         item.Quantity
                         *
@@ -146,13 +156,11 @@ public class OrderService : IOrderService
 
 
                     orderDTO.Items.Add(itemDTO);
-
                 }
 
 
 
                 result.Add(orderDTO);
-
             }
 
 
@@ -160,37 +168,31 @@ public class OrderService : IOrderService
 
             return new HTTPResponseData<List<OrderHistoryDTO>>
             {
-
                 DataResponse = result,
 
                 Message =
-                    "Lấy danh sách đơn mua thành công",
+                    OrderResponseMessageDTO.GetMyOrdersSuccess,
 
                 statusCode = 200,
 
                 Timestamp = DateTime.Now
-
             };
-
         }
-        catch(Exception ex)
-        {
 
+
+        catch(Exception)
+        {
             return new HTTPResponseData<List<OrderHistoryDTO>>
             {
-
                 DataResponse = null,
 
-                Message = ex.Message,
+                Message =
+                    OrderResponseMessageDTO.GetMyOrdersFailed,
 
                 statusCode = 500,
 
                 Timestamp = DateTime.Now
-
             };
-
         }
-
     }
-
 }
